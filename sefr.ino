@@ -166,9 +166,9 @@ void loop() {
   byte result_label = predict(test_data);
 
   // compare the results
-  Serial.print("Prediction class: ");
+  Serial.print("Predicted label: ");
   Serial.print(result_label);
-  Serial.print(" / actual class: ");
+  Serial.print(" / actual label: ");
   Serial.print(test_label);
   Serial.print(" / (SEFR training time: ");
   Serial.print(training_time);
