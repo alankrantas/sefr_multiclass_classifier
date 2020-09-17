@@ -4,6 +4,7 @@ class SEFR:
     """
     This is the multiclass classifier version of the SEFR algorithm for Python
     based on https://github.com/sefr-classifier/sefr/blob/master/SEFR.py.
+    
     Also see: https://arxiv.org/abs/2006.04620
     """
     
@@ -18,7 +19,7 @@ class SEFR:
 
     def fit(self, data_train, target_train):
         """
-        Use training data to fit the model.
+        Train the model.
         """
         
         self.weights = []
@@ -62,7 +63,7 @@ class SEFR:
 
     def predict(self, new_data):
         """
-        Use the model to predict labels.
+        Predict labels of the new data.
         """
         
         probs = []
