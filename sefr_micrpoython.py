@@ -1,15 +1,14 @@
 """
 This is the multiclass classifier version of the SEFR algorithm for MicroPython (ESP8266)
 based on my Arduino C++ version.
+
+With some modification, this can also be used as the Python 3.4 version without using NumPy.
 """
 
-from machine import Pin, freq
-from micropython import const
 from array import array
 import urandom, utime, gc
 
-freq(160000000) # run at 160 MHz
-urandom.seed(42)
+urandom.seed(0)
 gc.enable()
 
 # the iris dataset
@@ -54,7 +53,7 @@ def fit():
             weights[l].append((avg_pos - avg_neg) / (avg_pos + avg_neg))
 
 
-        weighted_score = array('d', [])
+        weighted_score = array('f', [])
         
         for d in data:
             weighted_score.append(sum(map(lambda x, y: x * y, weights[l], d)))
@@ -89,11 +88,9 @@ def predict(new_data):
 
 # ================================================================================
 
-led = Pin(2, Pin.OUT, value=0)
 
 fit() # train model
 
-led.value(1)
 
 while True:
     
