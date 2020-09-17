@@ -1,5 +1,5 @@
 /*
- * This is the multiclass classifier version of the SEFR algorithm 
+ * This is the multiclass classifier version of the SEFR algorithm for Arduino C++
  * based on my own Python version.
  * It's runnable on Arduino Uno/Nano and Arduino Leonardo/Micro.
  * 
