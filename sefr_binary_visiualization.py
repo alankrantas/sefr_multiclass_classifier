@@ -3,8 +3,7 @@ import numpy as np
 class SEFR:
     """
     This is the original binary classifier proposed in
-    'SEFR: A Fast Linear-Time Classifier for Ultra-Low Power Devices'
-    (https://arxiv.org/abs/2006.04620)
+    'SEFR: A Fast Linear-Time Classifier for Ultra-Low Power Devices' (https://arxiv.org/abs/2006.04620)
     with visiualization.
     """
 
@@ -106,7 +105,6 @@ print(classification_report(target_test, predictions))
 plt.rcParams['font.size'] = 14
 plt.figure(figsize=(16, 8))
 
-
 # draw test data
 plt.subplot(121)
 plt.title('Test Data')
@@ -119,7 +117,7 @@ plt.scatter(data_test.T[0], data_test.T[1], c=predictions, cmap=plt.cm.Paired)
 
 # draw hyperplane
 x1 = np.linspace(data_test.T[0].min(), data_test.T[0].max(), 2)
-x2 = (-sefr.bias - sefr.weights[0] * x1) / sefr.weights[1]  # x2=(-b-w1x1)/w2
+x2 = (-sefr.bias - sefr.weights[0] * x1) / sefr.weights[1]  # x2 = (-b - w1x1) / w2
 plt.plot(x1, x2, color='green')
 
 # visiualization
