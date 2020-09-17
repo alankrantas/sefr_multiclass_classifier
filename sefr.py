@@ -2,7 +2,7 @@ import numpy as np
 
 class SEFR:
     """
-    This is the multiclass classifier version of the SEFR algorithm
+    This is the multiclass classifier version of the SEFR algorithm for Python
     based on https://github.com/sefr-classifier/sefr/blob/master/SEFR.py.
     Also see: https://arxiv.org/abs/2006.04620
     """
