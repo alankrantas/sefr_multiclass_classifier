@@ -6,9 +6,9 @@ With some modification, this can also be used as the Python 3.4 version without 
 """
 
 from array import array
-import urandom, utime, gc
+import math, random, time, gc
 
-urandom.seed(0)
+random.seed(0)
 gc.enable()
 
 # the iris dataset
@@ -32,7 +32,7 @@ def fit():
     
     global weights, bias, training_time
 
-    start_time = utime.ticks_ms()
+    start_time = time.ticks_ms()
 
     for l, _ in enumerate(labels):
         
@@ -69,7 +69,7 @@ def fit():
         bias.append(-(count_neg * avg_pos_w + count_pos * avg_neg_w) / (count_pos + count_neg))
         
         
-    training_time = utime.ticks_ms() - start_time
+    training_time = time.ticks_ms() - start_time
     gc.collect()
 
 
@@ -98,10 +98,10 @@ while True:
     
     index = -1
     while index < 0 or index >= len(target):
-        index = urandom.getrandbits(8)
+        index = random.getrandbits(int(math.log(len(data)) / math.log(2)))
     
     test_data = tuple(map(
-        lambda x: x + (x * ((urandom.getrandbits(3) + 1) / 10) * (1 if urandom.getrandbits(1) == 0 else -1)),
+        lambda x: x + (x * ((random.getrandbits(3) + 1) / 10) * (1 if random.getrandbits(1) == 0 else -1)),
         data[index]))
     
     # predict label
@@ -113,4 +113,4 @@ while True:
     
     del index, test_data, prediction
     gc.collect()
-    utime.sleep(1)
+    time.sleep(1)
