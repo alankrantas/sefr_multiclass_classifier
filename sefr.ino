@@ -146,7 +146,7 @@ void setup() {
 
 void loop() {
 
-  // randomly pick a random data instance in DATASIZE as test data
+  // randomly pick a random data instance in DATASET as test data
 
   unsigned int test_index = random(0, DATASIZE);
   int test_data[FEATURES];
