@@ -45,6 +45,7 @@ class SEFR:
             avg_neg = np.mean(neg_indices, axis=0)
             
             weight = (avg_pos - avg_neg) / (avg_pos + avg_neg) # calculate model weight of "not the label"
+            weight = np.nan_to_num(weight) # set nan values to zero
             
             weighted_scores = np.dot(data_train, weight)
             
