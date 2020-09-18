@@ -7,6 +7,14 @@ class SEFR:
     with visiualization.
     """
 
+    def __init__(self):
+        """
+        Initialize model class.
+        """
+        
+        self.weights = []
+        self.bias = 0
+    
     def fit(self, data_train, target_train):
         """
         This is used for training the classifier on data.
