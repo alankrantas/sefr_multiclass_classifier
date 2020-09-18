@@ -89,10 +89,14 @@ class SEFR:
 
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import normalize
 from sklearn.metrics import accuracy_score, classification_report
 
 # load dataset
 data, target = datasets.load_iris(return_X_y=True)
+
+# normalization may increase accuracy but not always
+# data = normalize(data)
 
 # prepare training and test dataset
 data_train, data_test, target_train, target_test = train_test_split(
