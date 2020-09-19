@@ -148,8 +148,8 @@ void loop() {
   Serial.print("Test data: ");
   for (byte f = 0; f < FEATURES; f++) {
     int sign = (random(0, 2) == 0) ? 1 : -1;
-    int change = int(DATASET[test_index][f] * float(random(1, 4)) / 10.0);
-    test_data[f] = DATASET[test_index][f] + change * sign; // randomly add or subtract 10-30% to each feature
+    int change = int(DATASET[test_index][f] * float(random(4)) / 10.0);
+    test_data[f] = DATASET[test_index][f] + change * sign; // randomly add or subtract 0-30% to each feature
     Serial.print(float(test_data[f]) / float(DATAFACTOR));
     Serial.print(" ");
   }
