@@ -6,6 +6,6 @@ This is based on [sefr-classifier/sefr](https://github.com/sefr-classifier/sefr)
 
 SEFR is indeed very fast, if not more accurate. In the Python version (using the IRIS dataset), the training time (~500 nanosecond on my laptop) is only about less than 20% of KNN (K=3), less than 6% of Linear SVM (100 iterations) and less than 2% of logistic regression (100 iterations).
 
-The Arduino C++ version has a built-in IRIS dataset ported from scikit-learn and is runnable on Arduino Uno, Arduino Micro as well as various microcontrollers. The training time is about 240 ms on AVRs (16MHz), 95 ms on SAMD21 (48MHz) and 30 ms on ESP8266 (80 MHz).
+The Arduino C++ version has a built-in IRIS dataset ported from scikit-learn and is runnable on Arduino Uno, Arduino Micro as well as various microcontrollers. The training time is about 235 ms on AVRs (16MHz), 90 ms on SAMD21 (48MHz) and 30 ms on ESP8266 (80 MHz).
 
 I also wrote a MicroPython version, which can run on ESP8266 and ESP32, as well as a TinyGo version (which is too big for AVRs but still runable on any 32-bit microcontrollers.) Training time for both is a lot slower than the Arduino C++ version.
