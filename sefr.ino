@@ -1,10 +1,8 @@
 /*
- * This is the multiclass classifier version of the SEFR algorithm for Arduino C++
- * based on my own Python version.
- * It's runnable on Arduino Uno/Nano and Arduino Leonardo/Micro.
- * 
- * Also see: https://arxiv.org/abs/2006.04620
- */
+   This is the multiclass classifier version of the SEFR algorithm for Arduino C++
+   based on my own Python version.
+   It's runnable on Arduino Uno/Nano and Arduino Leonardo/Micro.
+*/
 
 const unsigned int DATASIZE   = 150; // number of data instances
 const byte         FEATURES   = 4;   // number of features
@@ -35,36 +33,36 @@ void fit() {
   // iterate all labels
   for (byte l = 0; l < LABELS; l++) {
 
-    // weighted score of data
-    int weighted_scores[DATASIZE];
-
     // iterate all features
     for (byte f = 0; f < FEATURES; f++) {
 
       float avg_pos = 0.0;
-      float count_pos = 0;
+      unsigned int count_pos = 0;
       for (unsigned int s = 0; s < DATASIZE; s++) {
         if (TARGET[s] != l) { // use "not the label" as positive class
           avg_pos += float(DATASET[s][f]) / float(DATAFACTOR);
           count_pos++;
         }
       }
-      avg_pos /= count_pos;
+      avg_pos /= float(count_pos);
 
       float avg_neg = 0.0;
-      float count_neg = 0;
+      unsigned int count_neg = 0;
       for (unsigned int s = 0; s < DATASIZE; s++) {
         if (TARGET[s] == l) { // use the label as negative class
           avg_neg += float(DATASET[s][f]) / float(DATAFACTOR);
           count_neg++;
         }
       }
-      avg_neg /= count_neg;
+      avg_neg /= float(count_neg);
 
       // calculate weight of this label
       weights[l][f] = (avg_pos - avg_neg) / (avg_pos + avg_neg);
     }
 
+    // weighted score of data
+    int weighted_scores[DATASIZE];
+    
     for (unsigned int s = 0; s < DATASIZE; s++) {
       weighted_scores[s] = 0.0;
       for (byte f = 0; f < FEATURES; f++) {
@@ -73,24 +71,24 @@ void fit() {
     }
 
     float avg_pos_w = 0.0;
-    float count_pos_w = 0;
+    unsigned int count_pos_w = 0;
     for (unsigned int s = 0; s < DATASIZE; s++) {
       if (TARGET[s] != l) {
         avg_pos_w += float(weighted_scores[s]) / 100.0;
         count_pos_w++;
       }
     }
-    avg_pos_w /= count_pos_w;
+    avg_pos_w /= float(count_pos_w);
 
     float avg_neg_w = 0.0;
-    float count_neg_w = 0;
+    unsigned int count_neg_w = 0;
     for (unsigned int s = 0; s < DATASIZE; s++) {
       if (TARGET[s] == l) {
         avg_neg_w += float(weighted_scores[s]) / 100.0;
         count_neg_w++;
       }
     }
-    avg_neg_w /= count_neg_w;
+    avg_neg_w /= float(count_neg_w);
 
     // calculate bias of this label
     bias[l] = -1 * (count_neg_w * avg_pos_w + count_pos_w * avg_neg_w) / (count_pos_w + count_neg_w);
@@ -116,14 +114,14 @@ byte predict(int new_data[FEATURES]) {
 
   // find the min score (least possible label of "not the label")
   float min_score = score[0];
-  byte min_label = -1;
-  for (byte l = 0; l < LABELS; l++) {
-    if (score[l] <= min_score) {
+  byte min_label = 0;
+  for (byte l = 1; l < LABELS; l++) {
+    if (score[l] < min_score) {
       min_score = score[l];
       min_label = l;
     }
   }
-  
+
   return min_label; // return prediction
 
 }
@@ -134,13 +132,8 @@ void setup() {
 
   Serial.begin(9600);
   randomSeed(42);
-  
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);
 
   fit(); // train SEFR model
-
-  digitalWrite(LED_BUILTIN, LOW);
 
 }
 
@@ -155,8 +148,8 @@ void loop() {
   Serial.print("Test data: ");
   for (byte f = 0; f < FEATURES; f++) {
     int sign = (random(0, 2) == 0) ? 1 : -1;
-    int change = int(DATASET[test_index][f] * (random(1, 10) / 10)) * sign;
-    test_data[f] = DATASET[test_index][f] + change; // randomly add or subtract 10-90% to each feature
+    int change = int(DATASET[test_index][f] * float(random(1, 4)) / 10.0);
+    test_data[f] = DATASET[test_index][f] + change * sign; // randomly add or subtract 10-30% to each feature
     Serial.print(float(test_data[f]) / float(DATAFACTOR));
     Serial.print(" ");
   }
