@@ -33,27 +33,24 @@ func fit() {
 	// iterate all labels
 	for l := uint8(0); l < labels; l++ {
 
+		var countPos, countNeg uint16
+
 		// iterate all features
 		for f := uint8(0); f < features; f++ {
 
-			var avgPos float32
-			var countPos uint16
+			var avgPos, avgNeg float32
+			countPos = 0
+			countNeg = 0
 			for i, s := range dataset {
 				if target[i] != l { // use "not the label" as positive class
 					avgPos += (float32(s[f]) / float32(datafactor))
 					countPos++
-				}
-			}
-			avgPos /= float32(countPos)
-
-			var avgNeg float32
-			var countNeg uint16
-			for i, s := range dataset {
-				if target[i] == l { // use the label as negative class
+				} else { // use the label as negative class
 					avgNeg += (float32(s[f]) / float32(datafactor))
 					countNeg++
 				}
 			}
+			avgPos /= float32(countPos)
 			avgNeg /= float32(countNeg)
 
 			// calculate weight of this label
@@ -69,28 +66,19 @@ func fit() {
 			}
 		}
 
-		var avgPosW float32
-		var countPosW uint16
+		var avgPosW, avgNegW float32
 		for i, c := range weightedScore {
 			if target[i] != l {
 				avgPosW += c
-				countPosW++
-			}
-		}
-		avgPosW /= float32(countPosW)
-
-		var avgNegW float32
-		var countNegW uint16
-		for i, c := range weightedScore {
-			if target[i] == l {
+			} else {
 				avgNegW += c
-				countNegW++
 			}
 		}
-		avgNegW /= float32(countNegW)
+		avgPosW /= float32(countPos)
+		avgNegW /= float32(countNeg)
 
 		// calculate bias of this label
-		bias[l] = -1 * (float32(countNegW)*avgPosW + float32(countPosW)*avgNegW) / float32(countPosW+countNegW)
+		bias[l] = -1 * (float32(countNeg)*avgPosW + float32(countPos)*avgNegW) / float32(countPos+countNeg)
 
 	}
 
@@ -147,8 +135,8 @@ func main() {
 			} else {
 				sign = -1.0
 			}
-			// randomly add or subtract 10-90% to each feature
-			change := float32(rand.Intn(5)+1) / 10.0
+			// randomly add or subtract 10-30% to each feature
+			change := float32(rand.Intn(2)+1) / 10.0
 			data := float32(dataset[index][f])
 			testData[f] = uint16(data + data*change*sign)
 			println(float32(testData[f]) / float32(datafactor))
