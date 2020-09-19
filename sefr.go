@@ -115,7 +115,7 @@ func predict(newData [features]uint16) uint8 {
 	minScore := score[0]
 	minLabel := uint8(0)
 	for l, c := range score {
-		if c <= minScore {
+		if c < minScore {
 			minScore = c
 			minLabel = uint8(l)
 		}
