@@ -33,27 +33,24 @@ void fit() {
   // iterate all labels
   for (byte l = 0; l < LABELS; l++) {
 
+    unsigned int count_pos = 0, count_neg = 0;
+
     // iterate all features
     for (byte f = 0; f < FEATURES; f++) {
 
-      float avg_pos = 0.0;
-      unsigned int count_pos = 0;
+      float avg_pos = 0.0, avg_neg = 0.0;
+      count_pos = 0;
+      count_neg = 0;
       for (unsigned int s = 0; s < DATASIZE; s++) {
         if (TARGET[s] != l) { // use "not the label" as positive class
           avg_pos += float(DATASET[s][f]) / float(DATAFACTOR);
           count_pos++;
-        }
-      }
-      avg_pos /= float(count_pos);
-
-      float avg_neg = 0.0;
-      unsigned int count_neg = 0;
-      for (unsigned int s = 0; s < DATASIZE; s++) {
-        if (TARGET[s] == l) { // use the label as negative class
+        } else { // use the label as positive class
           avg_neg += float(DATASET[s][f]) / float(DATAFACTOR);
           count_neg++;
         }
       }
+      avg_pos /= float(count_pos);
       avg_neg /= float(count_neg);
 
       // calculate weight of this label
@@ -62,7 +59,7 @@ void fit() {
 
     // weighted score of data
     int weighted_scores[DATASIZE];
-    
+
     for (unsigned int s = 0; s < DATASIZE; s++) {
       weighted_scores[s] = 0.0;
       for (byte f = 0; f < FEATURES; f++) {
@@ -70,28 +67,19 @@ void fit() {
       }
     }
 
-    float avg_pos_w = 0.0;
-    unsigned int count_pos_w = 0;
+    float avg_pos_w = 0.0, avg_neg_w = 0.0;
     for (unsigned int s = 0; s < DATASIZE; s++) {
       if (TARGET[s] != l) {
         avg_pos_w += float(weighted_scores[s]) / 100.0;
-        count_pos_w++;
-      }
-    }
-    avg_pos_w /= float(count_pos_w);
-
-    float avg_neg_w = 0.0;
-    unsigned int count_neg_w = 0;
-    for (unsigned int s = 0; s < DATASIZE; s++) {
-      if (TARGET[s] == l) {
+      } else {
         avg_neg_w += float(weighted_scores[s]) / 100.0;
-        count_neg_w++;
       }
     }
-    avg_neg_w /= float(count_neg_w);
+    avg_pos_w /= float(count_pos);
+    avg_neg_w /= float(count_neg);
 
     // calculate bias of this label
-    bias[l] = -1 * (count_neg_w * avg_pos_w + count_pos_w * avg_neg_w) / (count_pos_w + count_neg_w);
+    bias[l] = -1 * (float(count_neg) * avg_pos_w + float(count_pos) * avg_neg_w) / float(count_pos + count_neg);
   }
 
   // calculate training time
