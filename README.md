@@ -1,4 +1,4 @@
-# SEFR: Fast Linear Multiclass Classifier (Machine Learning)
+# SEFR: Fast Linear Multiclass Classifier (Machine Learning/TinyML)
 
 ![Figure_1](https://user-images.githubusercontent.com/44191076/93507582-75f65800-f950-11ea-802b-53d785677233.png)
 
