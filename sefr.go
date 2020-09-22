@@ -136,7 +136,7 @@ func main() {
 				sign = -1.0
 			}
 			// randomly add or subtract 10-30% to each feature
-			change := float32(rand.Intn(2)+1) / 10.0
+			change := float32(rand.Intn(3)+1) / 10.0
 			data := float32(dataset[index][f])
 			testData[f] = uint16(data + data*change*sign)
 			println(float32(testData[f]) / float32(datafactor))
