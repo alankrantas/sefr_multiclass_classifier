@@ -26,7 +26,7 @@ class SEFR:
         self.bias = []
         
         if isinstance(data_train, list):
-            data_train = np.array(train_predictors, dtype='float32')
+            data_train = np.array(data_train, dtype='float32')
         
         if isinstance(target_train, list):
             target_train = np.array(train_target, dtype='int32')
