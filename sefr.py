@@ -3,7 +3,7 @@ import numpy as np
 class SEFR:
     """
     This is the multiclass classifier version of the SEFR algorithm for Python
-    based on https://github.com/sefr-classifier/sefr/blob/master/SEFR.py.
+    based on https://github.com/sefr-classifier/sefr/blob/master/SEFR.py
     
     Also see: https://arxiv.org/abs/2006.04620
     """
@@ -13,6 +13,7 @@ class SEFR:
         Initialize model class.
         """
         
+        self.labels = []
         self.weights = []
         self.bias = []
 
@@ -22,6 +23,7 @@ class SEFR:
         Train the model.
         """
         
+        self.labels = []
         self.weights = []
         self.bias = []
         
@@ -41,6 +43,9 @@ class SEFR:
             pos_indices = data_train[pos_labels]
             neg_indices = data_train[neg_labels]
             
+            pos_label_count = pos_indices.size
+            neg_label_count = neg_labels.size
+            
             avg_pos = np.mean(pos_indices, axis=0)
             avg_neg = np.mean(neg_indices, axis=0)
             
@@ -51,9 +56,6 @@ class SEFR:
             
             pos_score_avg = np.mean(weighted_scores[pos_labels])
             neg_score_avg = np.mean(weighted_scores[neg_labels])
-            
-            pos_label_count = pos_indices.size
-            neg_label_count = neg_labels.size
             
             bias = -(neg_label_count * pos_score_avg + # calculate weighted average of bias
                      pos_label_count * neg_score_avg) / (neg_label_count + pos_label_count)
@@ -68,7 +70,7 @@ class SEFR:
         """
         
         probs = []
-        self.preds = []
+        preds = []
         
         if isinstance(new_data, list):
             new_data = np.array(new_data, dtype='float32')
@@ -79,11 +81,9 @@ class SEFR:
         probs = np.array(probs).T
         
         for prob in probs: # find the min score (least possible label of "not the label")
-            self.preds.append(self.labels[np.argmin(prob)])
+            preds.append(self.labels[np.argmin(prob)])
         
-        self.preds = np.array(self.preds)
-        
-        return self.preds
+        return np.array(preds)
 
 
 # ================================================================================
