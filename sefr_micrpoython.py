@@ -1,5 +1,5 @@
 """
-This is the multiclass classifier version of the SEFR algorithm for MicroPython (ESP8266)
+This is the multiclass classifier version of the SEFR algorithm for MicroPython (ESP8266/ESP32)
 based on my Arduino C++ version.
 With some modification, this can also be used as the Python 3.4 version without using NumPy.
 """
@@ -8,7 +8,8 @@ from array import array
 import math, random, time, gc
 gc.enable()
 
-# set ESP8266 to 160 MHz (which can reduce training time)
+# set ESP8266 to 160 MHz (which can reduce training time):
+
 # from machine import freq
 # freq(160000000)
 
