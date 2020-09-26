@@ -5,13 +5,15 @@ With some modification, this can also be used as the Python 3.4 version without 
 """
 
 from array import array
+from machine import freq
 import math, random, time, gc
+
 gc.enable()
 
-# set ESP8266 to 160 MHz (which can reduce training time):
-
-# from machine import freq
-# freq(160000000)
+try:
+    freq(240000000) # ESP32
+except:
+    freq(160000000) # ESP8266
 
 
 # the iris dataset
@@ -121,3 +123,4 @@ while True:
         prediction, target[index], training_time))
 
     time.sleep(1)
+
