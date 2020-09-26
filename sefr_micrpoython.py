@@ -6,6 +6,11 @@ With some modification, this can also be used as the Python 3.4 version without 
 
 from array import array
 import math, random, time, gc
+gc.enable()
+
+# set ESP8266 to 160 MHz (which can reduce training time)
+# from machine import freq
+# freq(160000000)
 
 
 # the iris dataset
@@ -13,7 +18,7 @@ data   = ((5.1,3.5,1.4,0.2),(4.9,3.0,1.4,0.2),(4.7,3.2,1.3,0.2),(4.6,3.1,1.5,0.2
 target = '000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222'
 
 feature_num = len(data[0])                 # number of features
-labels = tuple(sorted(tuple(set(target)))) # labels
+labels = tuple(sorted(set(target))) # labels
 
 weights = []          # model weights
 bias = array('f', []) # model bias
@@ -22,13 +27,18 @@ training_time = 0     # model training time
 
 # ================================================================================
 
-
 def fit():
     """
     Train the model with dataset.
     """
     
+    gc.collect()
+    
     global weights, bias, training_time
+    
+    weights = []
+    bias = array('f', [])
+    training_time = 0
 
     start_time = time.ticks_ms() # change it to time.time() on standard Python
 
@@ -50,12 +60,10 @@ def fit():
             # calculate label weights
             weights[-1].append((avg_pos - avg_neg) / (avg_pos + avg_neg))
 
-
         weighted_score = array('f', [])
         
         for d in data:
             weighted_score.append(sum(map(lambda x, y: x * y, weights[-1], d)))
-
 
         list_pos_w = [x for x, y in zip(weighted_score, target) if y != l]
         avg_pos_w = sum(list_pos_w) / count_pos
@@ -75,6 +83,8 @@ def predict(new_data):
     Predict label for a single new data instance.
     """
     
+    gc.collect()
+    
     score = []
     for i, _ in enumerate(labels):
         score.append(sum(map(lambda x, y: x * y, weights[i], new_data)) + bias[i])
@@ -86,15 +96,11 @@ def predict(new_data):
 # ================================================================================
 
 random.seed(42)
-gc.enable()
-gc.collect()
 
 fit() # train model
 
 
 while True:
-    
-    gc.collect()
     
     # select a random data instance and randomly +- 0~30% for each features
     
@@ -103,7 +109,7 @@ while True:
         index = random.getrandbits(int(math.log(len(data)) / math.log(2)))
     
     test_data = tuple(map(
-        lambda x: x + (x * (random.getrandbits(3) / 10) * (1 if random.getrandbits(1) == 0 else -1)),
+        lambda x: x + (x * (random.getrandbits(2) / 10) * (1 if random.getrandbits(1) == 0 else -1)),
         data[index]))
     
     # predict label
