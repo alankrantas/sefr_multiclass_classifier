@@ -78,7 +78,7 @@ func fit() {
 		avgNegW /= float32(countNeg)
 
 		// calculate bias of this label
-		bias[l] = -1 * (float32(countNeg)*avgPosW + float32(countPos)*avgNegW) / float32(countPos+countNeg)
+		bias[l] = -(float32(countNeg)*avgPosW + float32(countPos)*avgNegW) / float32(countPos+countNeg)
 
 	}
 
