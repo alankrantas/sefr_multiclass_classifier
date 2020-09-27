@@ -78,7 +78,7 @@ def fit():
         bias.append(-(count_neg * avg_pos_w + count_pos * avg_neg_w) / (count_pos + count_neg))
         
         
-    training_time = time.ticks_ms() - start_time  # change it to time.time() on standard Python
+    training_time = time.ticks_ms() - start_time
 
 
 def predict(new_data):
