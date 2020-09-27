@@ -4,10 +4,9 @@
    It's runnable on Arduino Uno/Nano and Arduino Leonardo/Micro.
 */
 
-unsigned int DATASIZE   = 150; // number of data instances
-const byte   FEATURES   = 4;   // number of features
-const byte   LABELS     = 3;   // number of labels (3 = 0, 1, 2)
-const byte   DATAFACTOR = 10;  // scale factor of data
+const byte FEATURES   = 4;   // number of features
+const byte LABELS     = 3;   // number of labels
+const byte DATAFACTOR = 10;  // scale factor of data
 
 // the Iris dataset (times DATAFACTOR so it can be stored as integer and save space/memory)
 int DATASET[][FEATURES] = {
@@ -28,7 +27,7 @@ unsigned int training_time;      // mode training time
 // train SEFR model with DATASET and TARGET
 void fit() {
 
-  unsigned int start_time = millis();
+  unsigned int datasize = sizeof(TARGET), start_time = millis();
 
   // iterate all labels
   for (byte l = 0; l < LABELS; l++) {
@@ -41,7 +40,7 @@ void fit() {
       float avg_pos = 0.0, avg_neg = 0.0;
       count_pos = 0;
       count_neg = 0;
-      for (unsigned int s = 0; s < DATASIZE; s++) {
+      for (unsigned int s = 0; s < datasize; s++) {
         if (TARGET[s] != l) { // use "not the label" as positive class
           avg_pos += float(DATASET[s][f]) / float(DATAFACTOR);
           count_pos++;
@@ -58,9 +57,9 @@ void fit() {
     }
 
     // weighted score of data
-    int weighted_scores[DATASIZE];
+    int weighted_scores[datasize];
 
-    for (unsigned int s = 0; s < DATASIZE; s++) {
+    for (unsigned int s = 0; s < datasize; s++) {
       weighted_scores[s] = 0.0;
       for (byte f = 0; f < FEATURES; f++) {
         weighted_scores[s] += float(DATASET[s][f]) / float(DATAFACTOR) * weights[l][f] * 100;
@@ -68,7 +67,7 @@ void fit() {
     }
 
     float avg_pos_w = 0.0, avg_neg_w = 0.0;
-    for (unsigned int s = 0; s < DATASIZE; s++) {
+    for (unsigned int s = 0; s < datasize; s++) {
       if (TARGET[s] != l) {
         avg_pos_w += float(weighted_scores[s]) / 100.0;
       } else {
@@ -129,7 +128,7 @@ void loop() {
 
   // randomly pick a random data instance in DATASET as test data
 
-  unsigned int test_index = random(0, DATASIZE);
+  unsigned int test_index = random(0, sizeof(TARGET));
   int test_data[FEATURES];
   byte test_label = TARGET[test_index];
 
