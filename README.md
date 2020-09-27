@@ -11,3 +11,5 @@ The microcontroller versions all have a built-in IRIS dataset ported from scikit
 The Arduino C++ version is runnable on Arduino Uno, Arduino Micro as well as other 2K memory AVR microcontrollers. The training time are currently about 100 ms on AVRs (16MHz), 40 ms on SAMD21 (48MHz), 11 ms on ESP8266 (80 MHz) and merely 1 ms on ESP32 (240 MHz).
 
 The MicroPython version can be run on ESP8266 and ESP32, and the Go\TinyGo version is runnable on 32-bit microcontrollers (not possible on AVRs). Training time for both are slower than the C++ version due to their designed nature.
+
+The CircuitPython version should be able to run on any devices that use CircuitPython firmware (built-in **ulab** (simplified NumPy) module is required).
