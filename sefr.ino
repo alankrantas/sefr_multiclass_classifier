@@ -6,7 +6,7 @@
 
 unsigned int DATASIZE   = 150; // number of data instances
 const byte   FEATURES   = 4;   // number of features
-const byte   LABELS     = 3;   // number of labels
+const byte   LABELS     = 3;   // number of labels (3 = 0, 1, 2)
 const byte   DATAFACTOR = 10;  // scale factor of data
 
 // the Iris dataset (times DATAFACTOR so it can be stored as integer and save space/memory)
