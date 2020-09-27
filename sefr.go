@@ -10,7 +10,7 @@ import (
 
 const (
 	features   uint8 = 4  // number of features
-	labels     uint8 = 3  // number of labels (3 = 0, 1, 2)
+	labels     uint8 = 3  // number of labels
 	datafactor uint8 = 10 // scale factor of data
 )
 
@@ -44,17 +44,17 @@ func (s *Sefr) Fit() {
 			var avgPos, avgNeg float32
 			countPos = 0
 			countNeg = 0
-			for i, s := range dataset {
+			for i, d := range dataset {
 				if target[i] != l { // use "not the label" as positive class
-					avgPos += (float32(s[f]) / float32(datafactor))
+					avgPos += float32(d[f])
 					countPos++
 				} else { // use the label as negative class
-					avgNeg += (float32(s[f]) / float32(datafactor))
+					avgNeg += float32(d[f])
 					countNeg++
 				}
 			}
-			avgPos /= float32(countPos)
-			avgNeg /= float32(countNeg)
+			avgPos /= (float32(countPos) * float32(datafactor))
+			avgNeg /= (float32(countNeg) * float32(datafactor))
 
 			// calculate weight of this label
 			s.Weights[l][f] = (avgPos - avgNeg) / (avgPos + avgNeg)
@@ -63,9 +63,9 @@ func (s *Sefr) Fit() {
 
 		// weighted score of data
 		weightedScore := make([]float32, len(dataset))
-		for i, score := range dataset {
+		for i, d := range dataset {
 			for f := uint8(0); f < features; f++ {
-				weightedScore[i] += float32(score[f]) / float32(datafactor) * s.Weights[l][f]
+				weightedScore[i] += float32(d[f]) * s.Weights[l][f]
 			}
 		}
 
@@ -77,8 +77,8 @@ func (s *Sefr) Fit() {
 				avgNegW += c
 			}
 		}
-		avgPosW /= float32(countPos)
-		avgNegW /= float32(countNeg)
+		avgPosW /= (float32(countPos) * float32(datafactor))
+		avgNegW /= (float32(countNeg) * float32(datafactor))
 
 		// calculate bias of this label
 		s.Bias[l] = -(float32(countNeg)*avgPosW + float32(countPos)*avgNegW) / float32(countPos+countNeg)
