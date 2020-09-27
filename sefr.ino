@@ -42,15 +42,15 @@ void fit() {
       count_neg = 0;
       for (unsigned int s = 0; s < datasize; s++) {
         if (TARGET[s] != l) { // use "not the label" as positive class
-          avg_pos += float(DATASET[s][f]) / float(DATAFACTOR);
+          avg_pos += float(DATASET[s][f]);
           count_pos++;
         } else { // use the label as positive class
-          avg_neg += float(DATASET[s][f]) / float(DATAFACTOR);
+          avg_neg += float(DATASET[s][f]);
           count_neg++;
         }
       }
-      avg_pos /= float(count_pos);
-      avg_neg /= float(count_neg);
+      avg_pos /= (float(count_pos) * float(DATAFACTOR));
+      avg_neg /= (float(count_neg) * float(DATAFACTOR));
 
       // calculate weight of this label
       weights[l][f] = (avg_pos - avg_neg) / (avg_pos + avg_neg);
@@ -62,20 +62,20 @@ void fit() {
     for (unsigned int s = 0; s < datasize; s++) {
       weighted_scores[s] = 0.0;
       for (byte f = 0; f < FEATURES; f++) {
-        weighted_scores[s] += float(DATASET[s][f]) / float(DATAFACTOR) * weights[l][f] * 100;
+        weighted_scores[s] += (float(DATASET[s][f]) * weights[l][f] * 100);
       }
     }
 
     float avg_pos_w = 0.0, avg_neg_w = 0.0;
     for (unsigned int s = 0; s < datasize; s++) {
       if (TARGET[s] != l) {
-        avg_pos_w += float(weighted_scores[s]) / 100.0;
+        avg_pos_w += float(weighted_scores[s]);
       } else {
-        avg_neg_w += float(weighted_scores[s]) / 100.0;
+        avg_neg_w += float(weighted_scores[s]);
       }
     }
-    avg_pos_w /= float(count_pos);
-    avg_neg_w /= float(count_neg);
+    avg_pos_w /= (float(count_pos) * float(DATAFACTOR) * 100.0);
+    avg_neg_w /= (float(count_neg) * float(DATAFACTOR) * 100.0);
 
     // calculate bias of this label
     bias[l] = -1 * (float(count_neg) * avg_pos_w + float(count_pos) * avg_neg_w) / float(count_pos + count_neg);
@@ -94,7 +94,7 @@ byte predict(int new_data[FEATURES]) {
     score[l] = 0.0;
     for (byte f = 0; f < FEATURES; f++) {
       // calculate weight of each labels
-      score[l] += float(new_data[f]) / float(DATAFACTOR) * weights[l][f];
+      score[l] += (float(new_data[f]) / float(DATAFACTOR) * weights[l][f]);
     }
     score[l] += bias[l]; // add bias of each labels
   }
