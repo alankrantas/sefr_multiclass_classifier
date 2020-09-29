@@ -1,7 +1,7 @@
 """
 This is the multiclass classifier version of the SEFR algorithm for CircuitPython
 based on my Python/MicroPython version.
-The ulab module is required (which may not be avaliable in some CP firmwares).
+The ulab module is required (which is avaliable in CP firmwares for SAMD51/M4 boards).
 """
 
 import ulab, random, time, gc
