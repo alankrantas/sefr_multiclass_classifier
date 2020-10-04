@@ -61,20 +61,17 @@ func (s *Sefr) Fit() {
 
 		}
 
-		// weighted score of data
-		weightedScore := make([]float32, len(dataset))
-		for i, d := range dataset {
-			for f := uint8(0); f < features; f++ {
-				weightedScore[i] += float32(d[f]) * s.Weights[l][f]
-			}
-		}
-
+		// calculate average weighted score of data
 		var avgPosW, avgNegW float32
-		for i, c := range weightedScore {
+		for i, d := range dataset {
+			var weightedScore float32
+			for f := uint8(0); f < features; f++ {
+				weightedScore += float32(d[f]) * s.Weights[l][f]
+			}
 			if target[i] != l {
-				avgPosW += c
+				avgPosW += weightedScore
 			} else {
-				avgNegW += c
+				avgNegW += weightedScore
 			}
 		}
 		avgPosW /= (float32(countPos) * float32(datafactor))
