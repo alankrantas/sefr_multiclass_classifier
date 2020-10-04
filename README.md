@@ -8,6 +8,6 @@ SEFR is indeed very fast. In the Python version (using the IRIS dataset) running
 
 The microcontroller versions all have a built-in IRIS dataset ported from scikit-learn with the potential option to input new data into the training dataset (and re-train model on device). They would use the whole dataset for training and can predict one new data instance at a time (here I simply pick a data from the dataset and add random noises). You can add new data to the dataset and train the model on-device again.
 
-The Arduino C++ version is runnable on Arduino Uno, Arduino Micro as well as other 2K memory AVR microcontrollers. The training time are currently about 100 ms on AVRs (16MHz), 40 ms on SAMD21 (48MHz), 11 ms on ESP8266 (80 MHz) and merely 1 ms on ESP32 (240 MHz).
+The Arduino C++ version is runnable on Arduino Uno or other 2K memory AVR microcontrollers. The training time is currently about 68 ms on AVRs (16MHz), 27 ms on SAMD21 (48MHz), 7 ms on ESP8266 (80 MHz) and merely 1 ms on ESP32 (240 MHz).
 
 The MicroPython version can be run on ESP8266 and ESP32, and the Go\TinyGo version can be run on 32-bit microcontrollers (not possible on AVRs). Training time for both are slower than the C++ version due to their designed nature. The CircuitPython version should be able to run on CP firmwares designed for Adafruit SAMD51 (M4) and ESP32-S2 boards that have the **ulab** (MicroPython NumPy) module built-in.
