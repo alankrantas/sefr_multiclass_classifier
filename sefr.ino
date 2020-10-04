@@ -47,7 +47,7 @@ void fit() {
         if (TARGET[s] != l) { // use "not the label" as positive class
           avg_pos += float(DATASET[s][f]);
           count_pos++;
-        } else { // use the label as positive class
+        } else { // use the label as negative class
           avg_neg += float(DATASET[s][f]);
           count_neg++;
         }
@@ -59,26 +59,21 @@ void fit() {
       weights[l][f] = (avg_pos - avg_neg) / (avg_pos + avg_neg);
     }
 
-    // weighted score of data
-    int weighted_scores[dataset_size];
-
-    for (unsigned int s = 0; s < dataset_size; s++) {
-      weighted_scores[s] = 0.0;
-      for (byte f = 0; f < FEATURES; f++) {
-        weighted_scores[s] += (float(DATASET[s][f]) * weights[l][f] * 100);
-      }
-    }
-
+    // calculate average weighted score for positive/negative data
     float avg_pos_w = 0.0, avg_neg_w = 0.0;
     for (unsigned int s = 0; s < dataset_size; s++) {
+      float weighted_score = 0.0;
+      for (byte f = 0; f < FEATURES; f++) {
+        weighted_score += (float(DATASET[s][f]) * weights[l][f]);
+      }
       if (TARGET[s] != l) {
-        avg_pos_w += float(weighted_scores[s]);
+        avg_pos_w += weighted_score;
       } else {
-        avg_neg_w += float(weighted_scores[s]);
+        avg_neg_w += weighted_score;
       }
     }
-    avg_pos_w /= (float(count_pos) * float(DATAFACTOR) * 100.0);
-    avg_neg_w /= (float(count_neg) * float(DATAFACTOR) * 100.0);
+    avg_pos_w /= (float(count_pos) * float(DATAFACTOR));
+    avg_neg_w /= (float(count_neg) * float(DATAFACTOR));
 
     // calculate bias of this label
     bias[l] = -1 * (float(count_neg) * avg_pos_w + float(count_pos) * avg_neg_w) / float(count_pos + count_neg);
