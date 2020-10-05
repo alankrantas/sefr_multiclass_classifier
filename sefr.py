@@ -99,8 +99,7 @@ data, target = datasets.load_iris(return_X_y=True)
 data = normalize(data)
 
 # prepare training and test dataset
-data_train, data_test, target_train, target_test = train_test_split(
-    data, target, test_size=0.2)
+data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2)
 
 # train model and predict labels
 sefr = SEFR()
