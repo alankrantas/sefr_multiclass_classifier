@@ -37,10 +37,8 @@ func (s *Sefr) Fit() {
 	for l := uint8(0); l < labels; l++ {
 
 		var countPos, countNeg uint16
-
 		// iterate all features
 		for f := uint8(0); f < features; f++ {
-
 			var avgPos, avgNeg float32
 			countPos = 0
 			countNeg = 0
@@ -55,7 +53,6 @@ func (s *Sefr) Fit() {
 			}
 			avgPos /= (float32(countPos) * float32(datafactor))
 			avgNeg /= (float32(countNeg) * float32(datafactor))
-
 			// calculate weight of this label
 			s.Weights[l][f] = (avgPos - avgNeg) / (avgPos + avgNeg)
 
@@ -76,7 +73,6 @@ func (s *Sefr) Fit() {
 		}
 		avgPosW /= (float32(countPos) * float32(datafactor))
 		avgNegW /= (float32(countNeg) * float32(datafactor))
-
 		// calculate bias of this label
 		s.Bias[l] = -(float32(countNeg)*avgPosW + float32(countPos)*avgNegW) / float32(countPos+countNeg)
 
