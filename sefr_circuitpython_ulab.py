@@ -34,11 +34,11 @@ def fit():
     """
     Train the model with dataset.
     """
-    
+
     gc.collect()
-    
+
     global weights, bias, training_time
-    
+
     weights = []
     bias = []
     training_time = 0
@@ -46,32 +46,29 @@ def fit():
     start_time = time.monotonic_ns()
 
     for _, label in enumerate(labels):
-        
+
         pos_labels = ulab.array([x for x, y in zip(data, target) if y != label])
         neg_labels = ulab.array([x for x, y in zip(data, target) if y == label])
-            
-        pos_label_count = pos_labels.size
-        neg_label_count = neg_labels.size
-        
+
         avg_pos = ulab.numerical.mean(pos_labels, axis=0) / data_factor
         avg_neg = ulab.numerical.mean(neg_labels, axis=0) / data_factor
 
         weight = ((avg_pos - avg_neg) / (avg_pos + avg_neg))
-        
+        weights.append(weight)
+
         weighted_scores = ulab.array([0.0] * len(data))
-        for i, d in enumerate(data):    
+        for i, d in enumerate(data):
             weighted_scores[i] = ulab.linalg.dot(d, weight)
-        
+
         weighted_pos_labels = ulab.array([x for x, y in zip(weighted_scores, target) if y != label])
         weighted_neg_labels = ulab.array([x for x, y in zip(weighted_scores, target) if y == label])
-            
+
         pos_score_avg = ulab.numerical.mean(weighted_pos_labels) / data_factor
         neg_score_avg = ulab.numerical.mean(weighted_neg_labels) / data_factor
-            
-        bias_label = -(neg_label_count * pos_score_avg +
-                       pos_label_count * neg_score_avg) / (neg_label_count + pos_label_count)
-            
-        weights.append(weight)
+
+        bias_label = -(neg_labels.size * pos_score_avg +
+                       pos_labels.size * neg_score_avg) / (pos_labels.size + neg_labels.size)
+
         bias.append(bias_label)
 
     training_time = (time.monotonic_ns() - start_time) / 1000000
@@ -83,13 +80,13 @@ def predict(new_data):
     """
     Predict label for a single new data instance.
     """
-    
+
     gc.collect()
-    
+
     score = []
     for i, _ in enumerate(labels):
         score.append(ulab.linalg.dot(new_data, weights[i]) + bias[i])
-    
+
     return labels[ulab.numerical.argmin(score)]
 
 
@@ -101,19 +98,19 @@ fit() # train model
 
 
 while True:
-    
+
     # select a random data instance and randomly +- 10~30% for each features
-    
+
     index = random.randrange(len(data))
-    
+
     test_data = list(map(
         lambda x: x + (x * (random.randint(1, 3) / 10) * (1 if random.randrange(2) == 0 else -1)),
         data[index]))
     test_data = ulab.array(test_data) / data_factor
-    
+
     # predict label
     prediction = predict(test_data)
-    
+
     print('Test data:', test_data)
     print('Predicted label: {} / actual label: {} / SEFR training time: {} ms\n'.format(
         prediction, target[index], training_time))
