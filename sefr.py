@@ -56,8 +56,8 @@ class SEFR:
             self.weights.append(weight) # label weight
             self.bias.append(bias) # label bias
         
-        self.weights = np.array(self.weights)
-        self.bias = np.array(self.bias)
+        self.weights = np.array(self.weights, dtype='float32')
+        self.bias = np.array(self.bias, dtype='float32')
 
 
     def predict(self, new_data):
@@ -65,20 +65,12 @@ class SEFR:
         Predict labels of the new data.
         """
         
-        probs = []
-        preds = []
-        
         if isinstance(new_data, list):
             new_data = np.array(new_data, dtype='float32')
-        
-        for i, _ in enumerate(self.labels): # calculate weighted score + bias of each labels
-            probs.append(np.dot(new_data, self.weights[i]) + self.bias[i])
-        probs = np.array(probs).T
-        
-        for prob in probs: # find the min score (least possible label of "not the label")
-            preds.append(self.labels[np.argmin(prob)])
-        
-        return np.array(preds)
+
+        # calculate weighted score + bias on each labels
+        weighted_score = np.add(np.dot(self.weights, new_data.T).T, self.bias)
+        return self.labels[np.argmin(weighted_score, axis=1)]
 
 
     def get_params(self, deep=True): # for cross-validation
