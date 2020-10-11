@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np, time
 
 class SEFR:
     """
@@ -16,6 +16,7 @@ class SEFR:
         self.labels = np.array([])
         self.weights = np.array([])
         self.bias = np.array([])
+        self.training_time = 0
 
 
     def fit(self, data_train, target_train):
@@ -26,6 +27,9 @@ class SEFR:
         self.labels = np.unique(target_train) # get all labels
         self.weights = []
         self.bias = []
+        self.training_time = 0
+        
+        start_time = time.monotonic_ns()
         
         if isinstance(data_train, list):
             data_train = np.array(data_train, dtype='float32')
@@ -58,6 +62,7 @@ class SEFR:
         
         self.weights = np.array(self.weights, dtype='float32')
         self.bias = np.array(self.bias, dtype='float32')
+        self.training_time = time.monotonic_ns() - start_time
 
 
     def predict(self, new_data):
@@ -80,7 +85,7 @@ class SEFR:
 # ================================================================================
 
 from sklearn import datasets
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.preprocessing import normalize
 from sklearn.metrics import accuracy_score, classification_report
 
@@ -91,18 +96,17 @@ data, target = datasets.load_iris(return_X_y=True)
 data = normalize(data)
 
 # prepare training and test dataset
-data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2)
+data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2, random_state=42)
 
 # train model and predict labels
 sefr = SEFR()
 sefr.fit(data_train, target_train)
 predictions = sefr.predict(data_test)
-cv_scores = cross_val_score(sefr, data_train, target_train, cv=5, scoring='accuracy')
+cv_predictions = cross_val_predict(sefr, data_train, target_train, cv=5)
 
 # view prediction results
-print('Predictions:', predictions)
-print('True labels:', target_test)
-print('Training dataset cross-validation accuracy:', cv_scores.mean().round(3))
+print('Training time:', sefr.training_time, 'ns')
+print('Training dataset prediction CV score:', accuracy_score(target_train, cv_predictions).round(3))
 print('Test dataset prediction accuracy:', accuracy_score(target_test, predictions).round(3))
 print('Test dataset classification report:')
 print(classification_report(target_test, predictions))
