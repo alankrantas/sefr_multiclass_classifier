@@ -66,7 +66,7 @@ def fit():
         weighted_score = []
         
         for d in data:
-            weighted_score.append(sum(map(lambda x, y: x * y, weights[-1], d)))
+            weighted_score.append(sum([x * y for x, y in zip(weights[-1], d)]))
 
         list_pos_w = [x for x, y in zip(weighted_score, target) if y != l]
         avg_pos_w = sum(list_pos_w) / data_factor / count_pos
@@ -90,7 +90,7 @@ def predict(new_data):
     
     score = []
     for i, _ in enumerate(labels):
-        score.append(sum(map(lambda x, y: x / data_factor * y, weights[i], new_data)) + bias[i])
+        score.append(sum([x / data_factor * y for x, y in zip(weights[i], new_data)]) + bias[i])
     
     # return predicted label
     return labels[score.index(min(score))]
