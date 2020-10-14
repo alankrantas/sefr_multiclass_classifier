@@ -23,9 +23,9 @@ target = ulab.array(
 feature_num = len(data[0]) # number of features
 labels = ulab.array(sorted(set(target)), dtype=ulab.uint8) # labels
 
-weights = []      # model weights
-bias    = []      # model bias
-training_time = 0 # model training time
+weights = ulab.array([])  # model weights
+bias    = ulab.array([])  # model bias
+training_time = 0         # model training time
 
 
 # ================================================================================
@@ -56,9 +56,7 @@ def fit():
         weight = ((avg_pos - avg_neg) / (avg_pos + avg_neg))
         weights.append(weight)
 
-        weighted_scores = ulab.array([0.0] * len(data))
-        for i, d in enumerate(data):
-            weighted_scores[i] = ulab.linalg.dot(d, weight)
+        weighted_scores = ulab.array([ulab.linalg.dot(d, weight) for d in data])
 
         weighted_pos_labels = ulab.array([x for x, y in zip(weighted_scores, target) if y != label])
         weighted_neg_labels = ulab.array([x for x, y in zip(weighted_scores, target) if y == label])
@@ -82,11 +80,7 @@ def predict(new_data):
     """
 
     gc.collect()
-
-    score = []
-    for i, _ in enumerate(labels):
-        score.append(ulab.linalg.dot(new_data, weights[i]) + bias[i])
-
+    score = ulab.array([(ulab.linalg.dot(new_data, w) + b) for w, b in zip(weights, bias)])
     return labels[ulab.numerical.argmin(score)]
 
 
@@ -103,16 +97,13 @@ while True:
 
     index = random.randrange(len(data))
 
-    test_data = list(map(
+    test_data = ulab.array(list(map(
         lambda x: x + (x * (random.randint(1, 3) / 10) * (1 if random.randrange(2) == 0 else -1)),
-        data[index]))
-    test_data = ulab.array(test_data) / data_factor
+        data[index]))) / data_factor
 
     # predict label
     prediction = predict(test_data)
 
     print('Test data:', test_data)
-    print('Predicted label: {} / actual label: {} / SEFR training time: {} ms\n'.format(
-        prediction, target[index], training_time))
-
+    print(f'Predicted label: {prediction} / actual label: {target[index]} / SEFR training time: {training_time} ms\n')
     time.sleep(1)
