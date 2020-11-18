@@ -1,6 +1,6 @@
 # SEFR: Fast Linear Multiclass Classifier (On-Device Machine Learning Training/Prediction for Low-Power Microcontrollers)
 
-![Figure_1](https://user-images.githubusercontent.com/44191076/93507582-75f65800-f950-11ea-802b-53d785677233.png)
+![Figure_1](https://user-images.githubusercontent.com/44191076/99478109-c7da4f00-298e-11eb-9331-0af528409ce7.png)
 
 This is based on [sefr-classifier/sefr](https://github.com/sefr-classifier/sefr) and [SEFR: A Fast Linear-Time Classifier for Ultra-Low Power Devices](https://arxiv.org/abs/2006.04620). The original proposed version is a binary classifier; I modified it to do multi-label classification by using one-vs-rest strategy.
 
