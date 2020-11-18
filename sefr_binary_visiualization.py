@@ -94,39 +94,51 @@ class SEFR:
 
 from sklearn.datasets import make_blobs
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, roc_curve, auc, classification_report
 import matplotlib.pyplot as plt
 
 
 # generate random data with 2 features
 data, target = make_blobs(n_samples=5000, n_features=2, centers=2, random_state=0)
-data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2)
+data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2, random_state=0)
 
 # model training and predict
 sefr = SEFR()
 sefr.fit(data_train, target_train)
 predictions = sefr.predict(data_test)
 
+# calculate true/false positive rate
+fpr, tpr, thresholds = roc_curve(target_test, predictions)
+auc_value = auc(fpr, tpr)
+
 print('Accuracy:', accuracy_score(target_test, predictions))
 print(classification_report(target_test, predictions))
 
-plt.rcParams['font.size'] = 14
-plt.figure(figsize=(16, 8))
+plt.rcParams['font.size'] = 12
+plt.figure(figsize=(18, 6))
 
 # draw test data
-plt.subplot(121)
+plt.subplot(131)
 plt.title('Test Data')
-plt.scatter(data_test.T[0], data_test.T[1], c=target_test, cmap=plt.cm.Paired)
+plt.scatter(data_test.T[0], data_test.T[1], c=target_test, cmap=plt.cm.Dark2)
+plt.grid(True)
 
 # draw prediction
-plt.subplot(122)
+plt.subplot(132)
 plt.title('SEFR predictions')
 plt.scatter(data_test.T[0], data_test.T[1], c=predictions, cmap=plt.cm.Paired)
-
 # draw hyperplane
 x1 = np.linspace(data_test.T[0].min(), data_test.T[0].max(), 2)
 x2 = (-sefr.bias - sefr.weights[0] * x1) / sefr.weights[1]  # x2 = (-b - w1x1) / w2
 plt.plot(x1, x2, color='green')
+plt.grid(True)
+
+# draw ROC/AUC
+plt.subplot(133)
+plt.title(f'ROC area = {auc_value.round(3)}')
+plt.plot(fpr, tpr, color='orange')
+plt.plot([0, 1], [0, 1], color='grey', linestyle='--')
+plt.grid(True)
 
 # visiualization
 plt.tight_layout()
