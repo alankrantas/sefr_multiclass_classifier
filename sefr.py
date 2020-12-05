@@ -35,7 +35,7 @@ class SEFR:
             data_train = np.array(data_train, dtype='float32')
         
         if isinstance(target_train, list):
-            target_train = np.array(train_target, dtype='int32')
+            target_train = np.array(target_train, dtype='int32')
         
         for label in self.labels: # train binary classifiers on each labels
             
@@ -86,17 +86,13 @@ class SEFR:
 
 from sklearn import datasets
 from sklearn.model_selection import train_test_split, cross_val_predict
-from sklearn.preprocessing import normalize
 from sklearn.metrics import accuracy_score, classification_report
 
 # load dataset
 data, target = datasets.load_iris(return_X_y=True)
 
-# normalization may increase accuracy but not always
-data = normalize(data)
-
 # prepare training and test dataset
-data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2, random_state=42)
+data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2, random_state=0)
 
 # train model and predict labels
 sefr = SEFR()
