@@ -84,25 +84,27 @@ class SEFR:
 
 # ================================================================================
 
-from sklearn import datasets
-from sklearn.model_selection import train_test_split, cross_val_predict
-from sklearn.metrics import accuracy_score, classification_report
+if __name__ == '__main__':
 
-# load dataset
-data, target = datasets.load_iris(return_X_y=True)
+    from sklearn import datasets
+    from sklearn.model_selection import train_test_split, cross_val_predict
+    from sklearn.metrics import accuracy_score, classification_report
 
-# prepare training and test dataset
-data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2, random_state=0)
+    # load dataset
+    data, target = datasets.load_iris(return_X_y=True)
 
-# train model and predict labels
-sefr = SEFR()
-sefr.fit(data_train, target_train)
-predictions = sefr.predict(data_test)
-cv_predictions = cross_val_predict(sefr, data_train, target_train, cv=5)
+    # prepare training and test dataset
+    data_train, data_test, target_train, target_test = train_test_split(data, target, test_size=0.2, random_state=0)
 
-# view prediction results
-print('Training time:', sefr.training_time, 'ns')
-print('Training dataset prediction CV score:', accuracy_score(target_train, cv_predictions).round(3))
-print('Test dataset prediction accuracy:', accuracy_score(target_test, predictions).round(3))
-print('Test dataset classification report:')
-print(classification_report(target_test, predictions))
+    # train model and predict labels
+    sefr = SEFR()
+    sefr.fit(data_train, target_train)
+    predictions = sefr.predict(data_test)
+    cv_predictions = cross_val_predict(sefr, data_train, target_train, cv=5)
+
+    # view prediction results
+    print('Training time:', sefr.training_time, 'ns')
+    print('Training dataset prediction CV score:', accuracy_score(target_train, cv_predictions).round(3))
+    print('Test dataset prediction accuracy:', accuracy_score(target_test, predictions).round(3))
+    print('Test dataset classification report:')
+    print(classification_report(target_test, predictions))
