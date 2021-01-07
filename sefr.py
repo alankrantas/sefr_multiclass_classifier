@@ -30,12 +30,8 @@ class SEFR:
         self.training_time = 0
         
         start_time = time.monotonic_ns()
-        
-        if isinstance(data_train, list):
-            data_train = np.array(data_train, dtype='float32')
-        
-        if isinstance(target_train, list):
-            target_train = np.array(target_train, dtype='int32')
+        data_train = np.array(data_train, dtype='float32')
+        target_train = np.array(target_train, dtype='int32')
         
         for label in self.labels: # train binary classifiers on each labels
             
@@ -54,8 +50,8 @@ class SEFR:
             pos_score_avg = np.mean(weighted_scores[pos_labels])
             neg_score_avg = np.mean(weighted_scores[neg_labels])
             
-            bias = -(neg_labels.size * pos_score_avg + # calculate weighted average of bias
-                     pos_indices.size * neg_score_avg) / (neg_labels.size + pos_indices.size)
+            bias = -(neg_indices.size * pos_score_avg + # calculate weighted average of bias
+                     pos_indices.size * neg_score_avg) / (neg_indices.size + pos_indices.size)
             
             self.weights.append(weight) # label weight
             self.bias.append(bias) # label bias
@@ -70,8 +66,7 @@ class SEFR:
         Predict labels of the new data.
         """
         
-        if isinstance(new_data, list):
-            new_data = np.array(new_data, dtype='float32')
+        new_data = np.array(new_data, dtype='float32')
 
         # calculate weighted score + bias on each labels
         weighted_score = np.add(np.dot(self.weights, new_data.T).T, self.bias)
