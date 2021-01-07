@@ -45,10 +45,10 @@ def fit():
 
     start_time = time.monotonic_ns()
 
-    for _, label in enumerate(labels):
+    for l in labels:
 
-        pos_labels = ulab.array([x for x, y in zip(data, target) if y != label])
-        neg_labels = ulab.array([x for x, y in zip(data, target) if y == label])
+        pos_labels = ulab.array([x for x, y in zip(data, target) if y != l])
+        neg_labels = ulab.array([x for x, y in zip(data, target) if y == l])
 
         avg_pos = ulab.numerical.mean(pos_labels, axis=0) / data_factor
         avg_neg = ulab.numerical.mean(neg_labels, axis=0) / data_factor
@@ -58,8 +58,8 @@ def fit():
 
         weighted_scores = ulab.array([ulab.linalg.dot(d, weight) for d in data])
 
-        weighted_pos_labels = ulab.array([x for x, y in zip(weighted_scores, target) if y != label])
-        weighted_neg_labels = ulab.array([x for x, y in zip(weighted_scores, target) if y == label])
+        weighted_pos_labels = ulab.array([x for x, y in zip(weighted_scores, target) if y != l])
+        weighted_neg_labels = ulab.array([x for x, y in zip(weighted_scores, target) if y == l])
 
         pos_score_avg = ulab.numerical.mean(weighted_pos_labels) / data_factor
         neg_score_avg = ulab.numerical.mean(weighted_neg_labels) / data_factor
