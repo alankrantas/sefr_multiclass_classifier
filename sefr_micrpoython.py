@@ -45,7 +45,7 @@ def fit():
 
     start_time = time.ticks_ms()
 
-    for _, l in enumerate(labels):
+    for l in labels:
         
         weights.append([])
         
@@ -89,7 +89,7 @@ def predict(new_data):
     gc.collect()
     
     score = []
-    for i, _ in enumerate(labels):
+    for i in range(len(labels)):
         score.append(sum([x / data_factor * y for x, y in zip(weights[i], new_data)]) + bias[i])
     
     # return predicted label
