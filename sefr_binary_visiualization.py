@@ -29,11 +29,8 @@ class SEFR:
         self.weights = []
         self.bias = 0
 
-        if isinstance(data_train, list):
-            data_train = np.array(data_train, dtype='float32')
-            
-        if isinstance(target_train, list):
-            target_train = np.array(target_train, dtype='int32')
+        data_train = np.array(data_train, dtype='float32')
+        target_train = np.array(target_train, dtype='int32')
         
         # pos_labels are those records where the label is positive
         # neg_labels are those records where the label is negative
@@ -61,7 +58,7 @@ class SEFR:
         neg_score_avg = np.mean(weighted_scores[neg_labels])  # Eq. 8
         
         pos_label_count = pos_indices.size
-        neg_label_count = neg_labels.size
+        neg_label_count = neg_indices.size
         
         # bias is calculated using a weighted average
         self.bias = -(neg_label_count * pos_score_avg + pos_label_count * neg_score_avg) / (neg_label_count + pos_label_count)
@@ -79,11 +76,9 @@ class SEFR:
         predictions in numpy array
         """
         
-        if isinstance(data_test, list):
-            data_test = np.array(data_test, dtype='float32')
+        data_test = np.array(data_test, dtype='float32')
 
         weighted_score = np.dot(data_test, self.weights)
-        
         preds = np.where(weighted_score + self.bias > 0, 1, 0)
         
         return preds
@@ -115,7 +110,7 @@ print('Accuracy:', accuracy_score(target_test, predictions))
 print(classification_report(target_test, predictions))
 
 plt.rcParams['font.size'] = 12
-plt.figure(figsize=(18, 6))
+plt.figure(figsize=(18, 7))
 
 # draw test data
 plt.subplot(131)
