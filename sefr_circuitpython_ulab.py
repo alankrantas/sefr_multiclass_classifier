@@ -95,7 +95,7 @@ while True:
 
     # select a random data instance and randomly +- 10~30% for each features
 
-    index = random.randrange(len(data))
+    index = random.randrange(data.shape[0])
 
     test_data = ulab.array(list(map(
         lambda x: x + (x * (random.randint(1, 3) / 10) * (1 if random.randrange(2) == 0 else -1)),
