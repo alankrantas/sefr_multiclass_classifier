@@ -146,7 +146,7 @@ func main() {
 		// compare the results
 		print("Predicted label: ", prediction)
 		print(" / actual label: ", target[index])
-		println(" / SEFR training time: ", sefr.TrainingTime/1000000, " ms\n")
+		println(" / SEFR training time: ", sefr.TrainingTime.Seconds(), "s\n")
 
 		time.Sleep(time.Millisecond * 1000)
 
