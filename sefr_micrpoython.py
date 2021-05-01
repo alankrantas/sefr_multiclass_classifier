@@ -1,18 +1,25 @@
 """
-This is the multiclass classifier version of the SEFR algorithm for MicroPython (ESP8266/ESP32)
+This is the multiclass classifier version of the SEFR algorithm for MicroPython (ESP8266/ESP32/RPi Pico)
 based on my Arduino C++ version.
 With some modification, this can also be used as the Python 3.4 version without using NumPy.
 """
 
 from machine import freq
+from sys import platform
 import math, random, time, gc
 
 gc.enable()
 
+freq_table = {
+    'esp8266': 160000000,
+    'esp32': 240000000,
+    'rp2': 270000000,
+    }
+
 try:
-    freq(240000000) # ESP32
+    freq(freq_table.get(platform, freq()))
 except:
-    freq(160000000) # ESP8266
+    pass
 
 
 # the iris dataset
@@ -119,7 +126,7 @@ while True:
     prediction = predict(test_data)
     
     print('Test data:', list(map(lambda n: n / data_factor, test_data)))
-    print('Predicted label: {} / actual label: {} / SEFR training time: {} ms\n'.format(
-        prediction, target[index], training_time))
+    print('Predicted label: {} / actual label: {} / SEFR training time: {} ms / MCU speed: {} MHz\n'.format(
+        prediction, target[index], training_time, freq() // 1000000))
 
     time.sleep(1)
