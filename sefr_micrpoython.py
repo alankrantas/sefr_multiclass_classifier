@@ -10,14 +10,14 @@ import math, random, time, gc
 
 gc.enable()
 
+original_freq = freq()
 freq_table = {
     'esp8266': 160000000,
     'esp32': 240000000,
     'rp2': 270000000,
     }
-
 try:
-    freq(freq_table.get(platform, freq()))
+    freq(freq_table[platform]) # use the fastest clock freq possible for training
 except:
     pass
 
@@ -109,6 +109,8 @@ random.seed(42)
 
 fit() # train model
 
+training_freq = freq()
+freq(original_freq) # restore processor clock freq
 
 while True:
     
@@ -127,6 +129,6 @@ while True:
     
     print('Test data:', list(map(lambda n: n / data_factor, test_data)))
     print('Predicted label: {} / actual label: {} / SEFR training time: {} ms / MCU speed: {} MHz\n'.format(
-        prediction, target[index], training_time, freq() // 1000000))
+        prediction, target[index], training_time, training_freq // 1000000))
 
     time.sleep(1)
